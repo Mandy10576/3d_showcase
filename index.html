@@ -4,10 +4,10 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My 3D Model Showcase</title>
-
+  
   <!-- Model Viewer -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
+  
   <!-- Styles -->
   <style>
     body {
@@ -55,28 +55,18 @@
 
   <header>My 3D Model Showcase</header>
 
-  <section class="gallery" id="gallery"></section>
+  <section class="gallery">
+    <!-- Model 1 -->
+    <model-viewer src="models/BELL.glb" alt="Model 1" auto-rotate camera-controls shadow-intensity="1"></model-viewer>
+
+    <!-- Model 2 -->
+    <model-viewer src="models/shivling.glb" alt="Model 2" auto-rotate camera-controls shadow-intensity="1"></model-viewer>
+
+    <!-- Model 3 -->
+    <model-viewer src="models/model3.glb" alt="Model 3" auto-rotate camera-controls shadow-intensity="1"></model-viewer>
+  </section>
 
   <footer>© 2025 My 3D Assets | Built with ❤️</footer>
-
-  <script>
-    // Load models from models.json and create <model-viewer> elements
-    fetch('models.json')
-      .then(response => response.json())
-      .then(models => {
-        const gallery = document.getElementById('gallery');
-        models.forEach(file => {
-          const viewer = document.createElement('model-viewer');
-          viewer.setAttribute('src', `models/${file}`);
-          viewer.setAttribute('alt', file);
-          viewer.setAttribute('auto-rotate', '');
-          viewer.setAttribute('camera-controls', '');
-          viewer.setAttribute('shadow-intensity', '1');
-          gallery.appendChild(viewer);
-        });
-      })
-      .catch(err => console.error('Error loading models:', err));
-  </script>
 
 </body>
 </html>
