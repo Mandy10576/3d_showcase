@@ -4,20 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>My 3D Model Showcase</title>
-  
-  <!-- Google Model Viewer -->
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-  
-  <!-- Styles -->
+
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #111;
       color: white;
-      margin: 0;
+      margin: 50px;
       padding: 0;
     }
-
     header {
       text-align: center;
       padding: 20px;
@@ -25,15 +21,13 @@
       font-size: 1.5rem;
       font-weight: bold;
     }
-
     .gallery {
       display: flex;
       flex-wrap: wrap;
       justify-content: center;
-      gap: 20px;
-      padding: 20px;
+      gap: 50px;
+      padding:40px;
     }
-
     .model-card {
       background: #000;
       border-radius: 10px;
@@ -42,13 +36,11 @@
       flex: 1 1 300px;
       max-width: 400px;
     }
-
     model-viewer {
       width: 100%;
-      height: 400px;
+      height: 300px;
       background: #000;
     }
-
     footer {
       text-align: center;
       padding: 15px;
@@ -56,73 +48,57 @@
       font-size: 0.9rem;
       color: #aaa;
     }
-
-    /* Mobile-friendly */
-    @media (max-width: 768px) {
-      .model-card {
-        max-width: 100%;
-      }
-    }
   </style>
 </head>
 <body>
 
-  <header>My 3D Model Showcase</header>
+<header>My 3D Model Showcase</header>
 
-  <section class="gallery">
-    <!-- Model 1 -->
-    <div class="model-card">
-      <model-viewer 
-        src="models/BELL.glb" 
-        alt="Model 1" 
+<section class="gallery" id="gallery"></section>
+
+<footer>© 2025 My 3D Assets | Built with ❤️</footer>
+
+<script>
+  // List of models (just add filenames here)
+  const models = [
+    "BELL.glb",
+    "shivling.glb",
+    "washingmachine.glb",
+    "BOX.glb",
+    "fireextinguisher.glb",
+    "pipes.glb",
+    "TABIZ.glb",
+    "mop.glb",
+    "mirror.glb",
+    "table.glb",
+    "walllamp.glb",
+    "chair.glb",
+    "khatiya.glb"
+
+  ];
+
+  const gallery = document.getElementById("gallery");
+
+  models.forEach(file => {
+    const card = document.createElement("div");
+    card.classList.add("model-card");
+
+    card.innerHTML = `
+      <model-viewer
+        src="models/${file}"
+        alt="${file}"
         ar
         camera-controls
         environment-image="neutral"
-        exposure=".5"
+        exposure=".85"
         shadow-intensity="1"
-        camera-orbit="0deg 75deg 5m"
-        min-camera-orbit="auto auto 4m"
-        max-camera-orbit="auto auto 5m"
         auto-rotate>
       </model-viewer>
-    </div>
+    `;
 
-    <!-- Model 2 -->
-    <div class="model-card">
-      <model-viewer 
-        src="models/shivling.glb" 
-        alt="Model 2" 
-        ar
-        camera-controls
-        environment-image="neutral"
-        exposure="1"
-        shadow-intensity="1"
-        camera-orbit="0deg 75deg 5m"
-        min-camera-orbit="auto auto 4m"
-        max-camera-orbit="auto auto 5m"
-        auto-rotate>
-      </model-viewer>
-    </div>
-
-    <!-- Model 3 -->
-    <div class="model-card">
-      <model-viewer 
-        src="models/model3.glb" 
-        alt="Model 3" 
-        ar
-        camera-controls
-        environment-image="neutral"
-        exposure="1.2"
-        shadow-intensity="1"
-        camera-orbit="0deg 75deg 2.5m"
-        min-camera-orbit="auto auto 1m"
-        max-camera-orbit="auto auto 5m"
-        auto-rotate>
-      </model-viewer>
-    </div>
-  </section>
-
-  <footer>© 2025 My 3D Assets | Built with ❤️</footer>
+    gallery.appendChild(card);
+  });
+</script>
 
 </body>
 </html>
