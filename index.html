@@ -1,20 +1,16 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
   <title>My 3D Model Showcase</title>
   <script type="module" src="https://unpkg.com/@google/model-viewer/dist/model-viewer.min.js"></script>
-
   <style>
     body {
       font-family: Arial, sans-serif;
       background: #111;
       color: white;
-      margin-left: 5%;
-      margin-right: 5%;
-      /* margin-top: 10%; */
-      padding-top: 3%;
+      margin: 0;
     }
     header {
       text-align: center;
@@ -23,37 +19,28 @@
       font-size: 1.5rem;
       font-weight: bold;
     }
+
+    /* Responsive grid: 2 / 3 / 4 columns */
     .gallery {
-  display: grid;
-  grid-template-columns: repeat(2, 1fr); /* Default for phones */
-  gap: 30px;
-  padding: 20px;
-}
+      display: grid;
+      grid-template-columns: repeat(2, 1fr);
+      gap: 40px;
+      padding: 5% 7%;
+    }
+    @media (min-width: 600px) {
+      .gallery { grid-template-columns: repeat(3, 1fr); }
+    }
+    @media (min-width: 1024px) {
+      .gallery { grid-template-columns: repeat(3, 1fr); }
+    }
 
-.model-card {
-  background: #000;
-  border-radius: 10px;
-  overflow: hidden;
-  box-shadow: 0 4px 15px rgba(0,0,0,0.5);
-  width: 100%;
-  /* height: 100%; */
-}
-
-/* Tablet screens */
-@media (min-width: 600px) {
-  .gallery {
-    grid-template-columns: repeat(3, 1fr);
-  }
-}
-
-/* Large desktop screens */
-@media (min-width: 1024px) {
-  .gallery {
-    grid-template-columns: repeat(3, 1fr);
-    gap:px;
-    padding: 40px;
-  }
-}
+    .model-card {
+      background: #000;
+      border-radius: 10px;
+      overflow: hidden;
+      box-shadow: 0 4px 15px rgba(0,0,0,0.5);
+      cursor: pointer;
+    }
     model-viewer {
       width: 100%;
       height: 250px;
@@ -66,6 +53,65 @@
       font-size: 0.9rem;
       color: #aaa;
     }
+
+    /* ===== Fullscreen Popup (lightbox) ===== */
+    #popup {
+      display: none;                /* toggled via JS */
+      position: fixed;
+      inset: 0;                     /* top:0 right:0 bottom:0 left:0 */
+      background: rgba(0, 0, 0, 0.9);
+      z-index: 9999;
+      justify-content: center;
+      align-items: center;
+      padding: 16px;                /* keeps edges tappable for outside-click */
+    }
+    /* content wrapper so we can detect outside clicks on the backdrop */
+    .popup-content {
+      width: min(900px, 90vw);      /* smaller on phones */
+      height: 70vh;                 /* smaller than full height */
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border-radius: 12px;
+      overflow: hidden;
+      box-shadow: 0 10px 30px rgba(0,0,0,0.6);
+      background: #000;             /* behind the canvas */
+    }
+    /* Bigger on tablets/desktop */
+    @media (min-width: 768px) {
+      .popup-content {
+        width: min(1100px, 85vw);
+        height: 80vh;
+      }
+    }
+    /* The big viewer inside popup */
+    #popupViewer {
+      width: 100%;
+      height: 100%;
+      background: #000;
+    }
+
+    /* Close Button — visible on phones (safe area aware) */
+    #closeBtn {
+      position: fixed;  /* fixed so it never hides behind the viewer */
+      top: calc(12px + env(safe-area-inset-top, 0px));
+      right: calc(12px + env(safe-area-inset-right, 0px));
+      font-size: 28px;
+      line-height: 1;
+      color: #fff;
+      cursor: pointer;
+      background: rgba(0, 0, 0, 0.6);
+      border: 1px solid rgba(255,255,255,0.25);
+      border-radius: 10px;
+      padding: 10px 14px;
+      z-index: 10000;  /* above everything inside popup */
+      touch-action: manipulation;   /* better mobile tap */
+    }
+    #closeBtn:active,
+    #closeBtn:hover {
+      background: rgba(255, 0, 0, 0.7);
+      border-color: rgba(255,255,255,0.4);
+    }
   </style>
 </head>
 <body>
@@ -74,33 +120,44 @@
 
 <section class="gallery" id="gallery"></section>
 
+<!-- Fullscreen Popup -->
+<div id="popup" aria-hidden="true">
+  <button id="closeBtn" aria-label="Close (Esc)">✕</button>
+
+  <!-- Clicks on this backdrop (outside .popup-content) will close -->
+  <div class="popup-backdrop" style="position:absolute; inset:0;"></div>
+
+  <div id="popupContent" class="popup-content" role="dialog" aria-modal="true">
+    <model-viewer id="popupViewer"
+      camera-controls
+      auto-rotate
+      shadow-intensity="1"
+      exposure=".85"
+      environment-image="neutral">
+    </model-viewer>
+  </div>
+</div>
+
 <footer>© 2025 My 3D Assets | Built with ❤️</footer>
 
 <script>
-  // List of models (just add filenames here)
   const models = [
-    "BELL.glb",
-    "shivling.glb",
-    "washingmachine.glb",
-    "BOX.glb",
-    "fireextinguisher.glb",
-    "pipes.glb",
-    "TABIZ.glb",
-    "mop.glb",
-    "mirror.glb",
-    "table.glb",
-    "walllamp.glb",
-    "chair.glb",
-    "khatiya.glb"
-
+    "BELL.glb","shivling.glb","washingmachine.glb","BOX.glb",
+    "fireextinguisher.glb","pipes.glb","TABIZ.glb","mop.glb",
+    "mirror.glb","table.glb","walllamp.glb","chair.glb","khatiya.glb"
   ];
 
   const gallery = document.getElementById("gallery");
+  const popup = document.getElementById("popup");
+  const popupViewer = document.getElementById("popupViewer");
+  const popupContent = document.getElementById("popupContent");
+  const closeBtn = document.getElementById("closeBtn");
+  const backdrop = popup.querySelector(".popup-backdrop");
 
+  // Build cards
   models.forEach(file => {
     const card = document.createElement("div");
     card.classList.add("model-card");
-
     card.innerHTML = `
       <model-viewer
         src="models/${file}"
@@ -113,8 +170,38 @@
         auto-rotate>
       </model-viewer>
     `;
-
+    card.addEventListener("click", () => openPopup(file));
     gallery.appendChild(card);
+  });
+
+  function openPopup(file) {
+    popup.style.display = "flex";
+    popup.setAttribute("aria-hidden", "false");
+    popupViewer.setAttribute("src", `models/${file}`);
+    // prevent background scroll while open
+    document.documentElement.style.overflow = "hidden";
+  }
+
+  function closePopup() {
+    popup.style.display = "none";
+    popup.setAttribute("aria-hidden", "true");
+    popupViewer.removeAttribute("src");
+    document.documentElement.style.overflow = "";
+  }
+
+  // Close on X
+  closeBtn.addEventListener("click", closePopup);
+
+  // Close when clicking outside content (on the backdrop)
+  // We use a dedicated backdrop element to reliably detect outside taps.
+  backdrop.addEventListener("click", closePopup);
+
+  // Prevent clicks inside the content from closing
+  popupContent.addEventListener("click", (e) => e.stopPropagation());
+
+  // Close on Escape key
+  document.addEventListener("keydown", (e) => {
+    if (e.key === "Escape" && popup.style.display === "flex") closePopup();
   });
 </script>
 
